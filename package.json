@@ -1,0 +1,25 @@
+{
+  "name": "nodejs_blog_api",
+  "version": "1.0.0",
+  "description": "Blog Api using node js and mongodb",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "keywords": [
+    "Node",
+    "js",
+    "Express",
+    "js",
+    "Mongoose"
+  ],
+  "author": "amar",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.2",
+    "express": "^4.18.2",
+    "mongoose": "^8.1.0",
+    "nodemon": "^3.0.3"
+  }
+}
