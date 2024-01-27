@@ -9,10 +9,14 @@ require("./config/dbConnect");
 
 const app = express();
 
+//------
 //middlewares
+//------
+app.use(express.json()); //pass incoming payload
 
+//------
 //routes
-
+//------
 //users route
 app.use("/api/v1/users/", userRouter);
 
@@ -31,4 +35,3 @@ app.use("/api/v1/categories", categoryRouter);
 const PORT = process.env.PORT || 9000;
 
 app.listen(PORT, console.log(`server is up and running on ${PORT}`));
-

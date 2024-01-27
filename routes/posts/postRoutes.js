@@ -25,3 +25,4 @@ postRouter.delete("/:id", deletePostsCtrl);
 postRouter.put("/:id", updatePostsCtrl);
 
 module.exports = postRouter;
+
