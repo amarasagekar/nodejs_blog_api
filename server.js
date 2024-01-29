@@ -3,6 +3,7 @@ const userRouter = require("./routes/users/userRoutes");
 const postRouter = require("./routes/posts/postRoutes");
 const categoryRouter = require("./routes/categories/categoryRoute");
 const commentRouter = require("./routes/comments/commentRoute");
+const globalErrHandler = require("./middlewares/globalErrhandler");
 const dotenv = require("dotenv").config();
 
 require("./config/dbConnect");
@@ -30,8 +31,15 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/categories", categoryRouter);
 
 //Error handlers middleware
-//listen to server
+app.use(globalErrHandler);
 
+//404 error- *- catch any route
+app.use("*", (req, res) => {
+  res.status(404).json({
+    message: `${req.originalUrl} route not found`,
+  });
+});
+//listen to server
 const PORT = process.env.PORT || 9000;
 
 app.listen(PORT, console.log(`server is up and running on ${PORT}`));
