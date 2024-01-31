@@ -8,6 +8,7 @@ const {
   deleteUserCtrl,
   updateUserCtrl,
   profilePhotoUploadCtrl,
+  whoViewMyProfileCtrl,
 } = require("../../controllers/users/userCtrl");
 const isLogin = require("../../middlewares/isLogin");
 
@@ -35,7 +36,11 @@ userRouter.delete("/:id", deleteUserCtrl);
 //PUT /api/v1/users/:id
 userRouter.put("/:id", updateUserCtrl);
 
-//POST /api//v1/users/:id
+//GEt /api/v1/users/profile-viewers/:id
+userRouter.get("/profile-viewers/:id", isLogin, whoViewMyProfileCtrl);
+
+whoViewMyProfileCtrl;
+//profile /api//v1/users/:id
 userRouter.post(
   "/profile-photo-upload",
   isLogin,
