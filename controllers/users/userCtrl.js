@@ -119,9 +119,9 @@ const follwoingCtrl = async (req, res, next) => {
       const isUserAlreadyFollowed = userToFollow.following.find(
         (follower) => follower.toString() == userWhoFollowed._id.toString()
       );
-      if(isUserAlreadyFollowed){
-        return next(appErr('You already followed this user'))
-      }else{
+      if (isUserAlreadyFollowed) {
+        return next(appErr("You already followed this user"));
+      } else {
         //5. Push userWhoFollowed to the user's followers array
         userToFollow.followers.push(userWhoFollowed._id);
         //6. push userToFollow to the userWhozFollowed's following array
@@ -135,9 +135,51 @@ const follwoingCtrl = async (req, res, next) => {
           data: "You have successfully followed this user",
         });
       }
-      
     }
-    
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+//unfollow
+const unFollowCtrl = async (req, res, next) => {
+  try {
+    //1. Find the user to unfollow
+    const userToBeunFollowed = await User.findById(req.params.id);
+    //2. Find the user who is unfollowing
+    const userWhoUnFollowed = await User.findById(req.userAuth);
+
+    //3. Check if user adn user who unfollowed are found
+    if (userToBeunFollowed && userWhoUnFollowed) {
+      //4. check if userWhoUnFollowed is already in the user's followers array
+      const isUserAlreadyFollowed = userToBeunFollowed.followers.find(
+        (follower) => follower.toString() === userWhoUnFollowed._id.toString()
+      );
+      if (!isUserAlreadyFollowed) {
+        return next(appErr("You have not followed by this user"));
+      } else {
+        //5. Remove userWhoUnFollowed from the user's followers array
+        userToBeunFollowed.followers = userToBeunFollowed.followers.filter(
+          (follower) => follower.toString() !== userWhoUnFollowed._id.toString()
+        );
+
+        //6. Save the user
+        await userToBeunFollowed.save();
+
+        //7. Remove userToBeUnFollowed from the userWhoUnfollowed's following array
+        userWhoUnFollowed.following = userWhoUnFollowed.following.filter(
+          (following) =>
+            following.toString() !== userToBeunFollowed._id.toString()
+        );
+        //8. Save the user
+        userWhoUnFollowed.save();
+
+        res.json({
+          status: "Success",
+          Data: "You have successfully unfollwed this user",
+        });
+      }
+    }
   } catch (error) {
     res.json(error.message);
   }
@@ -244,4 +286,5 @@ module.exports = {
   profilePhotoUploadCtrl,
   whoViewMyProfileCtrl,
   follwoingCtrl,
+  unFollowCtrl,
 };

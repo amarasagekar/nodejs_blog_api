@@ -10,6 +10,7 @@ const {
   profilePhotoUploadCtrl,
   whoViewMyProfileCtrl,
   follwoingCtrl,
+  unFollowCtrl,
 } = require("../../controllers/users/userCtrl");
 const isLogin = require("../../middlewares/isLogin");
 
@@ -42,6 +43,9 @@ userRouter.get("/profile-viewers/:id", isLogin, whoViewMyProfileCtrl);
 
 //GEt /api/v1/users/following/:id
 userRouter.get("/following/:id", isLogin, follwoingCtrl);
+
+//GEt /api/v1/users/unfollow/:id
+userRouter.get("/unfollowing/:id", isLogin, unFollowCtrl);
 
 whoViewMyProfileCtrl;
 //profile /api//v1/users/:id
