@@ -11,6 +11,8 @@ const {
   whoViewMyProfileCtrl,
   follwoingCtrl,
   unFollowCtrl,
+  blockUserCtrl,
+  unblockUserCtrl,
 } = require("../../controllers/users/userCtrl");
 const isLogin = require("../../middlewares/isLogin");
 
@@ -47,7 +49,12 @@ userRouter.get("/following/:id", isLogin, follwoingCtrl);
 //GEt /api/v1/users/unfollow/:id
 userRouter.get("/unfollowing/:id", isLogin, unFollowCtrl);
 
-whoViewMyProfileCtrl;
+//GEt /api/v1/users/block/:id
+userRouter.get("/block/:id", isLogin, blockUserCtrl);
+
+//GEt /api/v1/users/unblock/:id
+userRouter.get("/unblock/:id", isLogin, unblockUserCtrl);
+
 //profile /api//v1/users/:id
 userRouter.post(
   "/profile-photo-upload",
