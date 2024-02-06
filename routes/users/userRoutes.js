@@ -16,8 +16,8 @@ const {
   adminBlockUserCtrl,
 } = require("../../controllers/users/userCtrl");
 const isLogin = require("../../middlewares/isLogin");
-
 const multer = require("multer");
+const isAdmin = require("../../middlewares/isAdmin");
 const userRouter = express.Router();
 
 //Instance of multer
@@ -57,7 +57,7 @@ userRouter.get("/block/:id", isLogin, blockUserCtrl);
 userRouter.get("/unblock/:id", isLogin, unblockUserCtrl);
 
 //GEt /api/v1/users/admin-block/:id
-userRouter.put("/admin-block/:id", isLogin, adminBlockUserCtrl);
+userRouter.put("/admin-block/:id", isLogin, isAdmin, adminBlockUserCtrl);
 
 //profile /api//v1/users/:id
 userRouter.post(

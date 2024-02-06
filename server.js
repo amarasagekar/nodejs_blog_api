@@ -4,6 +4,7 @@ const postRouter = require("./routes/posts/postRoutes");
 const categoryRouter = require("./routes/categories/categoryRoute");
 const commentRouter = require("./routes/comments/commentRoute");
 const globalErrHandler = require("./middlewares/globalErrhandler");
+const isAdmin = require("./middlewares/isAdmin");
 const dotenv = require("dotenv").config();
 
 require("./config/dbConnect");
@@ -14,7 +15,7 @@ const app = express();
 //middlewares
 //------
 app.use(express.json()); //pass incoming payload
-
+app.use(isAdmin);
 //------
 //routes
 //------
