@@ -186,11 +186,12 @@ const unFollowCtrl = async (req, res, next) => {
 };
 
 //All
-const userCtrl = async (req, res) => {
+const userCtrl = async (req, res, next) => {
   try {
+    const user = await User.find()
     res.json({
       status: "success",
-      data: "All user",
+      data: user,
     });
   } catch (error) {
     res.json(error.message);
