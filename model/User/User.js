@@ -64,13 +64,13 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    Plan: [
-      {
-        type: String,
-        enum: ["Free", "Premium", "Pro"],
-        default: "Free",
-      },
-    ],
+    // Plan:
+    //   {
+    //     type: String,
+    //     enum: ["Free", "Premium", "Pro"],
+    //     default: "Free",
+    //   },
+
     userAward: {
       type: String,
       enum: ["Bronze", "Silver", "Gold"],

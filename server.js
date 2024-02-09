@@ -15,7 +15,7 @@ const app = express();
 //middlewares
 //------
 app.use(express.json()); //pass incoming payload
-app.use(isAdmin);
+// app.use(isAdmin);
 //------
 //routes
 //------

@@ -3,6 +3,7 @@ const verifyToken = require("../utils/verifyToken");
 
 const { appErr } = require("../utils/appErr");
 const isLogin = (req, res, next) => {
+  console.log("isLoginnnnnnnnn")
   //get token from header
   const token = getTokenFromHeader(req);
 

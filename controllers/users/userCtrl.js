@@ -36,9 +36,10 @@ const userRegisterCtrl = async (req, res, next) => {
 };
 
 //Login
-const userLoginCtrl = async (req, res) => {
+const userLoginCtrl = async (req, res, next) => {
   const { email, password } = req.body;
   try {
+    console.log("user loginnnnnnnnn");
     //Check is email exist
     const userFound = await User.findOne({ email });
     if (!userFound) {
@@ -70,7 +71,7 @@ const userLoginCtrl = async (req, res) => {
       },
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 
@@ -188,7 +189,7 @@ const unFollowCtrl = async (req, res, next) => {
 //All
 const userCtrl = async (req, res, next) => {
   try {
-    const user = await User.find()
+    const user = await User.find();
     res.json({
       status: "success",
       data: user,

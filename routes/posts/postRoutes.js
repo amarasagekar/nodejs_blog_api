@@ -7,10 +7,12 @@ const {
   updatePostsCtrl,
 } = require("../../controllers/posts/postsCtrl");
 
+const isLogin = require("../../middlewares/isLogin");
+
 const postRouter = express.Router();
 
 //POST create
-postRouter.post("/", createPostsCtrl);
+postRouter.post("/", isLogin, createPostsCtrl);
 
 //GET posts
 postRouter.get("/:id", getPostsCtrl);

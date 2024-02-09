@@ -14,11 +14,15 @@ const isAdmin = async (req, res, next) => {
   // find the user in DB
   const user = await User.findById(decodedUser.id);
 
-  //Check if admin
-  if (user.isAdmin) {
-    return next();
+  if (user) {
+    //Check if admin
+    if (user.isAdmin) {
+      return next();
+    } else {
+      next(appErr("Access Denied, Admin Only", 403));
+    }
   } else {
-    next(appErr("Access Denied, Admin Only", 403));
+    next();
   }
 };
 
