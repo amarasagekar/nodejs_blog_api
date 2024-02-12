@@ -107,6 +107,46 @@ userSchema.pre("findOne", async function (next) {
     return lastPostDateStr;
   });
 
+  //------------Check if user is inactive for 30 days-----------
+  //get current date
+  const currentDate = new Date();
+  //get the difference between the last post date and the current date
+  const diff = currentDate - lastPostDate;
+
+  //get the difference in days and return less than in days
+  const diffIndays = diff / (1000 * 3600 * 24);
+
+  if (diffIndays > 30) {
+    // Add virtuals isInactive to the scema to check if a user is inactivbe for 30 days
+    userSchema.virtual("isInactive").get(function () {
+      return true;
+    });
+
+    // find the user by ID and update -- block user
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      }
+    );
+  } else {
+    userSchema.virtual("isInactive").get(function () {
+      return false;
+    });
+     // find the user by ID and update -- unblock user
+     await User.findByIdAndUpdate(
+      userId,
+      {
+        isBlocked: flase,
+      },
+      {
+        new: true,
+      }
+    );
+  }
   next();
 });
 
