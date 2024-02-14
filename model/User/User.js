@@ -88,16 +88,19 @@ const userSchema = new mongoose.Schema(
 //pre-before record is saved
 userSchema.pre("findOne", async function (next) {
   console.log("Pre hook called");
-  console.log(this);
+
+  //populate the post
+  this.populate("posts");
+
   //get the user id
-  const userId = this.conditions._id;
+  const userId = this._conditions._id;
   //find the post created by the user
   const posts = await Post.find({ user: userId });
   //get the last post create dby the user
   const lastPost = posts[posts.length - 1];
 
   //get the last post date
-  const lastPostDate = new Date(lastPost.createdAt);
+  const lastPostDate = new Date(lastPost?.createdAt);
 
   // get the last post date in String format
   const lastPostDateStr = lastPostDate.toDateString();
@@ -136,17 +139,61 @@ userSchema.pre("findOne", async function (next) {
     userSchema.virtual("isInactive").get(function () {
       return false;
     });
-     // find the user by ID and update -- unblock user
-     await User.findByIdAndUpdate(
+    // find the user by ID and update -- unblock user
+    await User.findByIdAndUpdate(
       userId,
       {
-        isBlocked: flase,
+        isBlocked: false,
       },
       {
         new: true,
       }
     );
   }
+
+  //---------Last Active Date----------
+  //Convert to days ago , for example 1 day ago
+  const daysAgo = Math.floor(diffIndays);
+  //add virtuals lastactive in days to schema
+  userSchema.virtual("lastActive").get(function () {
+    //check if daysAgo is less than 0
+    if (daysAgo <= 0) {
+      return "Today";
+    } else if (daysAgo === 1) {
+      return "Yesterday";
+    } else {
+      return `${daysAgo} days ago`;
+    }
+  });
+
+  //--------------------------------------
+  // Update userAward based on the number of post
+  //--------------------------------------
+  //Get the number of post
+  const numberOfPosts = posts.length;
+  //check if the number of posts is less then 10
+  if (numberOfPosts < 10) {
+    await User.findByIdAndUpdate(
+      userId,
+      { userAward: "Bronze" },
+      { new: true }
+    );
+  }
+
+  //check if the number of posts is greater then 10
+  if (numberOfPosts > 10) {
+    await User.findByIdAndUpdate(
+      userId,
+      { userAward: "Silver" },
+      { new: true }
+    );
+  }
+
+  //check if the number of posts is greater then 20
+  if (numberOfPosts > 20) {
+    await User.findByIdAndUpdate(userId, { userAward: "Gold" }, { new: true });
+  }
+console.log("hook completed...")
   next();
 });
 

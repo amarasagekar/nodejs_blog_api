@@ -311,12 +311,17 @@ const adminUnBlockUserCtrl = async (req, res, next) => {
   }
 };
 //Profile
-const userProfileCtrl = async (req, res) => {
+const userProfileCtrl = async (req, res, next) => {
   try {
     //const token = getTokenFromHeader(req);
 
+    //option1 or we can do it in userschema
+    //const user = await User.findById(req.userAuth).populate("posts");
+    //option2 or we can do it in userschema
+    // const user = await User.findById(req.userAuth).populate({
+    //   path: "posts",
+    // });
     const user = await User.findById(req.userAuth);
-
     res.json({
       status: "success",
       data: user,
@@ -339,12 +344,62 @@ const deleteUserCtrl = async (req, res) => {
 };
 
 //PUT update user
-const updateUserCtrl = async (req, res) => {
+const updateUserCtrl = async (req, res, next) => {
+  const { email, lastname, firstname } = req.body;
   try {
+    // check if email is not taken
+    if (email) {
+      const emailTaken = await User.findOne({ email });
+      if (emailTaken) {
+        return next(appErr("Email is taken", 400));
+      }
+    }
+    // update the user
+    const user = User.findByIdAndUpdate(
+      req.userAuth,
+      {
+        lastname,
+        firstname,
+        email,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
     res.json({
       status: "success",
-      data: "update user route",
+      data: user,
     });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+//PUT update password
+const updatePasswordCtrl = async (req, res, next) => {
+  console.log("Request data:");
+  const { password } = req.body;
+  try {
+    // check if user is updating the password
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // update user
+      await User.findByIdAndUpdate(
+        req.userAuth,
+        { password: hashedPassword },
+        { new: true, runValidators: true }
+      );
+      res.json({
+        status: "success",
+        data: "Password has been changed successfully",
+      });
+    } else {
+      next(appErr("Please provide password field"));
+    }
   } catch (error) {
     res.json(error.message);
   }
@@ -404,4 +459,5 @@ module.exports = {
   unblockUserCtrl,
   adminBlockUserCtrl,
   adminUnBlockUserCtrl,
+  updatePasswordCtrl,
 };
