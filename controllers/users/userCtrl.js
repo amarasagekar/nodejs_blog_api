@@ -405,6 +405,17 @@ const updatePasswordCtrl = async (req, res, next) => {
   }
 };
 
+//PUT deleteUserAccountCtrl
+const deleteUserAccountCtrl = async (req, res, next) => {
+  console.log("Request data:");
+
+  try {
+    res.send("Delete Account");
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 //Profile photo upload
 const profilePhotoUploadCtrl = async (req, res) => {
   try {
@@ -460,4 +471,5 @@ module.exports = {
   adminBlockUserCtrl,
   adminUnBlockUserCtrl,
   updatePasswordCtrl,
+  deleteUserAccountCtrl,
 };
