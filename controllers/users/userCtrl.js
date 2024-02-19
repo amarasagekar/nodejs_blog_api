@@ -3,6 +3,9 @@ const User = require("../../model/User/User");
 const generateToken = require("../../utils/generatetoken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const { appErr, AppErr } = require("../../utils/appErr");
+const Post = require("../../model/Post/Post");
+const Category = require("../../model/Category/Category");
+const Comment = require("../../model/Comment/Comment");
 
 //Register
 const userRegisterCtrl = async (req, res, next) => {
@@ -331,18 +334,6 @@ const userProfileCtrl = async (req, res, next) => {
   }
 };
 
-//Delete user
-const deleteUserCtrl = async (req, res) => {
-  try {
-    res.json({
-      status: "success",
-      data: "delete user route",
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-};
-
 //PUT update user
 const updateUserCtrl = async (req, res, next) => {
   const { email, lastname, firstname } = req.body;
@@ -407,10 +398,22 @@ const updatePasswordCtrl = async (req, res, next) => {
 
 //PUT deleteUserAccountCtrl
 const deleteUserAccountCtrl = async (req, res, next) => {
-  console.log("Request data:");
-
   try {
-    res.send("Delete Account");
+    //1. Find the user to be deleted
+    const userToDelete = await User.findById(req.userAuth);
+    //2. find all post to be deleted
+    await postMessage.deleteMany({ user: req.userAuth });
+    //3. Delete all the comments of the user
+    await Comment.deleteMany({ user: req.userAuth });
+    //4. Delete all the categories of the user
+    await Category.deleteMany({ user: req.userAuth });
+    //5. Delete the user
+    await userToDelete.deleteOne();
+    //send response
+    return res.json({
+      status: "success",
+      data: "Your account has been deleted successfully",
+    });
   } catch (error) {
     res.json(error.message);
   }
@@ -460,7 +463,6 @@ module.exports = {
   userLoginCtrl,
   userCtrl,
   userProfileCtrl,
-  deleteUserCtrl,
   updateUserCtrl,
   profilePhotoUploadCtrl,
   whoViewMyProfileCtrl,

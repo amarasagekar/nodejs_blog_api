@@ -5,7 +5,6 @@ const {
   userLoginCtrl,
   userCtrl,
   userProfileCtrl,
-  deleteUserCtrl,
   updateUserCtrl,
   profilePhotoUploadCtrl,
   whoViewMyProfileCtrl,
@@ -37,9 +36,6 @@ userRouter.get("/", userCtrl);
 
 //GET /api/v1/profile/:id
 userRouter.get("/profile/", isLogin, userProfileCtrl);
-
-//DELETE /api/v1/users/:id
-userRouter.delete("/:id", deleteUserCtrl);
 
 //PUT /api/v1/users/:id
 userRouter.put("/:id", isLogin, updateUserCtrl);
