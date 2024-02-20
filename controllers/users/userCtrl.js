@@ -9,7 +9,7 @@ const Comment = require("../../model/Comment/Comment");
 
 //Register
 const userRegisterCtrl = async (req, res, next) => {
-  const { firstname, lastname, profilePhoto, email, password } = req.body;
+  const { firstname, lastname, email, password } = req.body;
 
   try {
     //check is email exist
@@ -46,9 +46,7 @@ const userLoginCtrl = async (req, res, next) => {
     //Check is email exist
     const userFound = await User.findOne({ email });
     if (!userFound) {
-      return res.json({
-        msg: "Invalid login credentials",
-      });
+      return next(appErr("Invalid login credentials"));
     }
 
     //Verify password
@@ -58,9 +56,7 @@ const userLoginCtrl = async (req, res, next) => {
     );
 
     if (!isPasswordMatched) {
-      return res.json({
-        msg: "Invalid login credentials",
-      });
+      return next(appErr("Invalid login credentials"));
     }
 
     res.json({
@@ -106,7 +102,7 @@ const whoViewMyProfileCtrl = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -141,7 +137,7 @@ const follwoingCtrl = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -185,7 +181,7 @@ const unFollowCtrl = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -198,7 +194,7 @@ const userCtrl = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -229,7 +225,7 @@ const blockUserCtrl = async (req, res, next) => {
       });
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -262,7 +258,7 @@ const unblockUserCtrl = async (req, res, next) => {
       });
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -286,7 +282,7 @@ const adminBlockUserCtrl = async (req, res, next) => {
       data: "You have successfully blocked this user",
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -310,7 +306,7 @@ const adminUnBlockUserCtrl = async (req, res, next) => {
       data: "You have successfully unblocked this user",
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 //Profile
@@ -330,7 +326,7 @@ const userProfileCtrl = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -364,7 +360,7 @@ const updateUserCtrl = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -392,7 +388,7 @@ const updatePasswordCtrl = async (req, res, next) => {
       next(appErr("Please provide password field"));
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
@@ -415,7 +411,7 @@ const deleteUserAccountCtrl = async (req, res, next) => {
       data: "Your account has been deleted successfully",
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
