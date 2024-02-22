@@ -33,7 +33,7 @@ const createPostsCtrl = async (req, res, next) => {
   }
 };
 
-//Get posts
+//Get single posts 
 const getPostsCtrl = async (req, res) => {
   try {
     res.json({

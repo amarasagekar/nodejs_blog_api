@@ -18,7 +18,7 @@ postRouter.post("/", isLogin, createPostsCtrl);
 postRouter.get("/:id", getPostsCtrl);
 
 //GET  all posts
-postRouter.get("/", allPostsCtrl);
+postRouter.get("/", isLogin, allPostsCtrl);
 
 //DELETE user
 postRouter.delete("/:id", deletePostsCtrl);
@@ -27,4 +27,3 @@ postRouter.delete("/:id", deletePostsCtrl);
 postRouter.put("/:id", updatePostsCtrl);
 
 module.exports = postRouter;
-
