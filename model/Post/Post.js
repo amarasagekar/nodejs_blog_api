@@ -15,7 +15,7 @@ const postSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      // required: [true, "Post category is required"],
+      required: [true, "Post category is required"],
     },
     numViews: [
       {
@@ -51,6 +51,6 @@ const postSchema = new mongoose.Schema(
 );
 
 //Compile the post model
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;
