@@ -1,50 +1,80 @@
-//Categories
-const categoriesCtrl = async (req, res) => {
+const Category = require("../../model/Category/Category");
+const { AppErr } = require("../../utils/appErr");
+
+//Create
+const categoriesCtrl = async (req, res, next) => {
+  const { title } = req.body;
   try {
+    const category = await Category.create({ title, user: req.userAuth });
     res.json({
       status: "success",
-      data: "categories created",
+      data: category,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
-const getCategoriesCtrl = async (req, res) => {
+//all
+const fetchCategoriesCtrl = async (req, res, next) => {
   try {
+    const categories = await Category.find();
     res.json({
       status: "success",
-      data: "categories route",
+      data: categories,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
-const deleteCategoriesCtrl = async (req, res) => {
+//single
+const getCategoriesCtrl = async (req, res, next) => {
   try {
+    const category = await Category.findById(req.params.id);
     res.json({
       status: "success",
-      data: "delete categories route",
+      data: category,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
   }
 };
 
-const putCategoriesCtrl = async (req, res) => {
+//Delete
+const deleteCategoriesCtrl = async (req, res, next) => {
   try {
+    const category = await Category.findByIdAndDelete(req.params.id);
     res.json({
       status: "success",
-      data: "update categories route",
+      data: "Category has been deleted successfully",
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appErr(error.message));
+  }
+};
+
+//Update
+const updateCategoriesCtrl = async (req, res, next) => {
+  const { title } = req.body;
+  try {
+    const category = await Category.findByIdAndUpdate(
+      req.params.id,
+      { title },
+      { new: true, runValidators: true }
+    );
+    res.json({
+      status: "success",
+      data: category,
+    });
+  } catch (error) {
+    return next(appErr(error.message));
   }
 };
 module.exports = {
   categoriesCtrl,
   getCategoriesCtrl,
   deleteCategoriesCtrl,
-  putCategoriesCtrl,
+  updateCategoriesCtrl,
+  fetchCategoriesCtrl,
 };
