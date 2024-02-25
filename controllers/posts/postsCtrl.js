@@ -33,7 +33,7 @@ const createPostsCtrl = async (req, res, next) => {
   }
 };
 
-//Get single posts 
+//Get single posts
 const getPostsCtrl = async (req, res) => {
   try {
     res.json({
@@ -48,9 +48,24 @@ const getPostsCtrl = async (req, res) => {
 //get All posts
 const allPostsCtrl = async (req, res) => {
   try {
+    //Find all posts
+    const posts = await Post.find({})
+      .populate("user")
+      .populate("category", "title");
+
+    // Check if the user is blocked by the post owner
+    const filteredposts = posts.filter((post) => {
+      //get all blocked users
+      const blockedUsers = post.user.blocked;
+      const isblocked = blockedusers.includes(req.userAuth);
+
+      //return isblocked ? null : post;
+
+      return !isBlocked;
+    });
     res.json({
       status: "success",
-      data: "all post",
+      data: filteredposts,
     });
   } catch (error) {
     res.json(error.message);
