@@ -88,6 +88,33 @@ const toggleLikePostCtrl = async (req, res) => {
   }
 };
 
+//toggleDislikes
+const toggleDislikePostCtrl = async (req, res) => {
+  try {
+    //1. Get the post
+    const post = await Post.findById(req.params.id);
+    //2. Check if the user has already unlikes the post
+    const isUnliked = post.disLikes.includes(req.userAuth);
+    //3. In the user has already liked the post, unclike the post
+    if (isUnliked) {
+      post.disLikes = post.disLikes.filter(
+        (disLike) => disLike.toString() != req.userAuth.toString()
+      );
+      await post.save();
+    } else {
+      //4. Inf the user has not liked the post, like the post
+      post.disLikes.push(req.userAuth);
+      await post.save();
+    }
+
+    res.json({
+      status: "success",
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
 //Get single posts
 const getPostsCtrl = async (req, res) => {
   try {
@@ -130,4 +157,5 @@ module.exports = {
   deletePostsCtrl,
   updatePostsCtrl,
   toggleLikePostCtrl,
+  toggleDislikePostCtrl,
 };

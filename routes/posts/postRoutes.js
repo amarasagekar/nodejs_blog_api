@@ -6,6 +6,7 @@ const {
   deletePostsCtrl,
   updatePostsCtrl,
   toggleLikePostCtrl,
+  toggleDislikePostCtrl,
 } = require("../../controllers/posts/postsCtrl");
 
 const isLogin = require("../../middlewares/isLogin");
@@ -23,6 +24,9 @@ postRouter.get("/", isLogin, allPostsCtrl);
 
 //Like posts
 postRouter.get("/likes/:id", isLogin, toggleLikePostCtrl);
+
+//Dislike posts
+postRouter.get("/dislikes/:id", isLogin, toggleDislikePostCtrl);
 
 //DELETE post
 postRouter.delete("/:id", deletePostsCtrl);
