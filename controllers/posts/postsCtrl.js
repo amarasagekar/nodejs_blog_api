@@ -33,18 +33,6 @@ const createPostsCtrl = async (req, res, next) => {
   }
 };
 
-//Get single posts
-const getPostsCtrl = async (req, res) => {
-  try {
-    res.json({
-      status: "success",
-      data: "post route",
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-};
-
 //get All posts
 const allPostsCtrl = async (req, res) => {
   try {
@@ -57,15 +45,55 @@ const allPostsCtrl = async (req, res) => {
     const filteredposts = posts.filter((post) => {
       //get all blocked users
       const blockedUsers = post.user.blocked;
-      const isblocked = blockedusers.includes(req.userAuth);
+      const isBlocked = blockedUsers.includes(req.userAuth);
 
-      //return isblocked ? null : post;
+      //return isBlocked ? null : post;
 
       return !isBlocked;
     });
     res.json({
       status: "success",
       data: filteredposts,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+//toggleLikes
+const toggleLikePostCtrl = async (req, res) => {
+  try {
+    //1. Get the post
+    const post = await Post.findById(req.params.id);
+    //2. Check if the user has already likes the post
+    const isLiked = post.likes.includes(req.userAuth);
+    //3. In the user has already liked the post, unclike the post
+    if (isLiked) {
+      post.likes = post.likes.filter(
+        (like) => like.toString() != req.userAuth.toString()
+      );
+      await post.save();
+    } else {
+      //4. Inf the user has not liked the post, like the post
+      post.likes.push(req.userAuth);
+      await post.save();
+    }
+
+    res.json({
+      status: "success",
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+//Get single posts
+const getPostsCtrl = async (req, res) => {
+  try {
+    res.json({
+      status: "success",
+      data: "post route",
     });
   } catch (error) {
     res.json(error.message);
@@ -101,4 +129,5 @@ module.exports = {
   allPostsCtrl,
   deletePostsCtrl,
   updatePostsCtrl,
+  toggleLikePostCtrl,
 };
