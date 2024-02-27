@@ -118,10 +118,26 @@ const toggleDislikePostCtrl = async (req, res) => {
 //Get single posts
 const getPostsCtrl = async (req, res) => {
   try {
-    res.json({
-      status: "success",
-      data: "post route",
-    });
+    //Find the post
+    const post = await Post.findById(req.params.id);
+    //number of view
+    //Check if uer viewed this post
+    const isViewed = post.numViews.includes(req.userAuth);
+    if (isViewed) {
+      res.json({
+        status: "success",
+        data: post,
+      });
+    } else {
+      // push the user in to numOfViews
+      post.numViews.push(req.userAuth);
+      //save
+      await post.save();
+      res.json({
+        status: "success",
+        data: "post route",
+      });
+    }
   } catch (error) {
     res.json(error.message);
   }
