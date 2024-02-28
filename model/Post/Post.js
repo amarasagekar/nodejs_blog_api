@@ -66,9 +66,37 @@ postSchema.pre(/^find/, function (next) {
   });
 
   // add dislikes count as virtual field
-  postSchema.virtual("dislikesCount").get(function () {
+  postSchema.virtual("disLikesCount").get(function () {
     const post = this;
     return post.disLikes.length;
+  });
+
+  //check the most liked post in percentage
+  postSchema.virtual("likesPercentage").get(function () {
+    const post = this;
+    const total = +post.likes.length + +post.disLikes.length;
+    const percentage = (post.likes.length / total) * 100;
+    return `${percentage}%`;
+  });
+
+  //check the most disLiked post in percentage
+  postSchema.virtual("disLikesPercentage").get(function () {
+    const post = this;
+    const total = +post.disLikes.length + +post.disLikes.length;
+    const percentage = (post.disLikes.length / total) * 100;
+    return `${percentage}%`;
+  });
+
+  //If days is less is 0 return today if days is 1 return yesterday else return days ago
+  postSchema.virtual("daysAgo").get(function () {
+    const post = this;
+    const date = new Date(post.createdAt);
+    const daysAgo = Math.floor((Date.now() - date) / 86400000);
+    return daysAgo === 0
+      ? "today"
+      : daysAgo === 1
+      ? "yesterday"
+      : `${daysAgo} days ago`;
   });
   next();
 });
