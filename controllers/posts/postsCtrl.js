@@ -4,6 +4,7 @@ const { appErr } = require("../../utils/appErr");
 
 //Create Post
 const createPostsCtrl = async (req, res, next) => {
+
   const { title, description, category } = req.body;
   try {
     //Find the user
@@ -12,12 +13,14 @@ const createPostsCtrl = async (req, res, next) => {
     if (author.isBlocked) {
       return next(appErr("Access denied, account is blocked", 403));
     }
+    
     //Create the post
     const postCreated = await Post.create({
       title,
       description,
       user: author._id,
       category,
+      photo: req?.file?.path,
     });
     // Associate user to a post push the post in to the user post field
     author.posts.push(postCreated);
