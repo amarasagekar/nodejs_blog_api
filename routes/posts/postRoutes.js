@@ -20,7 +20,7 @@ const postRouter = express.Router();
 const upload = multer({ storage });
 
 //POST create
-postRouter.post("/", isLogin, upload.single('image'), createPostsCtrl);
+postRouter.post("/", isLogin, upload.single("image"), createPostsCtrl);
 
 //GET posts
 postRouter.get("/:id", isLogin, getPostsCtrl);
@@ -35,9 +35,9 @@ postRouter.get("/likes/:id", isLogin, toggleLikePostCtrl);
 postRouter.get("/dislikes/:id", isLogin, toggleDislikePostCtrl);
 
 //DELETE post
-postRouter.delete("/:id", deletePostsCtrl);
+postRouter.delete("/:id", isLogin, deletePostsCtrl);
 
 //PUT/update post
-postRouter.put("/:id", updatePostsCtrl);
+postRouter.put("/:id", isLogin, upload.single("image"), updatePostsCtrl);
 
 module.exports = postRouter;

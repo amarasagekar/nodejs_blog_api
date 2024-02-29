@@ -4,7 +4,6 @@ const { appErr } = require("../../utils/appErr");
 
 //Create Post
 const createPostsCtrl = async (req, res, next) => {
-
   const { title, description, category } = req.body;
   try {
     //Find the user
@@ -13,7 +12,7 @@ const createPostsCtrl = async (req, res, next) => {
     if (author.isBlocked) {
       return next(appErr("Access denied, account is blocked", 403));
     }
-    
+
     //Create the post
     const postCreated = await Post.create({
       title,
@@ -147,11 +146,18 @@ const getPostsCtrl = async (req, res) => {
 };
 
 //Delete Posts
-const deletePostsCtrl = async (req, res) => {
+const deletePostsCtrl = async (req, res, next) => {
   try {
+    // check if the user belongs to the post
+    // find the post
+    const post = await Post.findById(req.params.id);
+    if (post.user.toString() !== req.userAuth.toString()) {
+      return next(appErr("You are not allowed to delete this post", 403));
+    }
+    await Post.findByIdAndDelete(req.params.id);
     res.json({
       status: "success",
-      data: "delete posts route",
+      data: "Post deleted successfully..",
     });
   } catch (error) {
     res.json(error.message);
@@ -159,11 +165,30 @@ const deletePostsCtrl = async (req, res) => {
 };
 
 //Put/ update poste
-const updatePostsCtrl = async (req, res) => {
+const updatePostsCtrl = async (req, res, next) => {
+  const { title, description, category } = req.body;
   try {
+    // find the post
+    const post = await Post.findById(req.params.id);
+    // check if the user belongs to the post
+    if (post.user.toString() !== req.userAuth.toString()) {
+      return next(appErr("You are not allowed to update this post", 403));
+    }
+    await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        category,
+        photo: req?.file?.path,
+      },
+      {
+        new: true,
+      }
+    );
     res.json({
       status: "success",
-      data: "update posts route",
+      data: post,
     });
   } catch (error) {
     res.json(error.message);
