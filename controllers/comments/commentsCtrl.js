@@ -60,16 +60,29 @@ const deleteCommentsCtrl = async (req, res) => {
 };
 
 //PUT/update comments
-const updateCommentsCtrl = async (req, res) => {
+
+const updateCommentsCtrl = async (req, res, next) => {
+  const { description } = req.body;
   try {
+    //find the comment
+    const comment = await Comment.findById(req.params.id);
+    if (comment.user.toString() !== req.userAuth.toString()) {
+      return next(appErr("You are not allowed to update this comment", 403));
+    }
+    const category = await Comment.findByIdAndUpdate(
+      req.params.id,
+      { description },
+      { new: true, runValidators: true }
+    );
     res.json({
       status: "success",
-      data: "update comments route",
+      data: category,
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
+
 module.exports = {
   createCommentsCtrl,
   getCommentsCtrl,

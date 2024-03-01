@@ -18,6 +18,6 @@ commentRouter.get("/:id", getCommentsCtrl);
 commentRouter.delete("/:id", deleteCommentsCtrl);
 
 //PUT/update comments
-commentRouter.put("/:id", updateCommentsCtrl);
+commentRouter.put("/:id", isLogin, updateCommentsCtrl);
 
 module.exports = commentRouter;
