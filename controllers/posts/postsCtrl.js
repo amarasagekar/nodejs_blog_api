@@ -36,7 +36,7 @@ const createPostsCtrl = async (req, res, next) => {
 };
 
 //get All posts
-const allPostsCtrl = async (req, res) => {
+const allPostsCtrl = async (req, res, next) => {
   try {
     //Find all posts
     const posts = await Post.find({})
@@ -58,12 +58,12 @@ const allPostsCtrl = async (req, res) => {
       data: filteredposts,
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 
 //toggleLikes
-const toggleLikePostCtrl = async (req, res) => {
+const toggleLikePostCtrl = async (req, res, next) => {
   try {
     //1. Get the post
     const post = await Post.findById(req.params.id);
@@ -86,12 +86,12 @@ const toggleLikePostCtrl = async (req, res) => {
       data: post,
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 
 //toggleDislikes
-const toggleDislikePostCtrl = async (req, res) => {
+const toggleDislikePostCtrl = async (req, res, next) => {
   try {
     //1. Get the post
     const post = await Post.findById(req.params.id);
@@ -114,11 +114,11 @@ const toggleDislikePostCtrl = async (req, res) => {
       data: post,
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 //Get single posts
-const getPostsCtrl = async (req, res) => {
+const getPostsCtrl = async (req, res, next) => {
   try {
     //Find the post
     const post = await Post.findById(req.params.id);
@@ -141,7 +141,7 @@ const getPostsCtrl = async (req, res) => {
       });
     }
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 
@@ -160,7 +160,7 @@ const deletePostsCtrl = async (req, res, next) => {
       data: "Post deleted successfully..",
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 
@@ -191,9 +191,10 @@ const updatePostsCtrl = async (req, res, next) => {
       data: post,
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
+
 module.exports = {
   createPostsCtrl,
   getPostsCtrl,

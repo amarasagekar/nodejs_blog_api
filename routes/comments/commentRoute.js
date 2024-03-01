@@ -5,11 +5,11 @@ const {
   updateCommentsCtrl,
   deleteCommentsCtrl,
 } = require("../../controllers/comments/commentsCtrl");
-
+const isLogin = require("../../middlewares/isLogin");
 const commentRouter = express.Router();
 
 //Create comments
-commentRouter.post("/", createCommentsCtrl);
+commentRouter.post("/:id", isLogin, createCommentsCtrl);
 
 //GET comments
 commentRouter.get("/:id", getCommentsCtrl);
