@@ -35,27 +35,21 @@ const createCommentsCtrl = async (req, res, next) => {
   }
 };
 
-//Get comments
-const getCommentsCtrl = async (req, res) => {
-  try {
-    res.json({
-      status: "success",
-      data: "comment route",
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-};
-
 //Delete Comments
-const deleteCommentsCtrl = async (req, res) => {
+const deleteCommentsCtrl = async (req, res, next) => {
   try {
+    //find the comment
+    const comment = await Comment.findById(req.params.id);
+    if (comment.user.toString() !== req.userAuth.toString()) {
+      return next(appErr("You are not allowed to update this comment", 403));
+    }
+    await Comment.findByIdAndDelete(req.params.id);
     res.json({
       status: "success",
-      data: "delete comments route",
+      data: "Comment has been deleted successfully",
     });
   } catch (error) {
-    res.json(error.message);
+    next(appErr(error.message));
   }
 };
 
@@ -85,7 +79,6 @@ const updateCommentsCtrl = async (req, res, next) => {
 
 module.exports = {
   createCommentsCtrl,
-  getCommentsCtrl,
   updateCommentsCtrl,
   deleteCommentsCtrl,
 };

@@ -11,9 +11,6 @@ const commentRouter = express.Router();
 //Create comments
 commentRouter.post("/:id", isLogin, createCommentsCtrl);
 
-//GET comments
-commentRouter.get("/:id", getCommentsCtrl);
-
 //DELETE comments
 commentRouter.delete("/:id", deleteCommentsCtrl);
 
